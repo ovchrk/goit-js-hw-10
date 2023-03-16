@@ -1,8 +1,13 @@
-const BASE_URL = 'https://restcountries.com/v3.1/all';
+const BASE_URL = 'https://restcountries.com/v3.1/name/';
+import Notiflix from 'notiflix';
+import { renderCountryCard } from './index.js';
 
-function fetchCountries(name) {
-  return fetch(`${BASE_URL}?fields=name,capital,population,flags,languages`)
+export function fetchCountries(name) {
+  fetch(`${BASE_URL}${name}?fields=name,capital,population,flags,languages`)
     .then(response => {
+      if (!response.ok) {
+        Notiflix.Notify.failure('Oops, there is no country with that name');
+      }
       return response.json();
     })
     .then(renderCountryCard)
@@ -10,5 +15,4 @@ function fetchCountries(name) {
       console.log(error);
     });
 }
-
 // export { fetchCountries };
