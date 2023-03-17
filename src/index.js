@@ -4,6 +4,7 @@ import Notiflix from 'notiflix';
 import { fetchCountries } from './fetchCountries';
 
 const DEBOUNCE_DELAY = 300;
+const EMPTY_FIELD = '';
 
 const inputRef = document.querySelector('#search-box');
 const countryListRef = document.querySelector('.country-list');
@@ -22,20 +23,17 @@ function onInput(evt) {
 
   if (inputValue !== '') {
     fetchCountries(inputValue);
-  }
-  if (inputValue === '') {
-    countryInfoRef.innerHTML = '';
-    countryListRef.innerHTML = '';
+  } else {
+    clearAllFields();
   }
 }
 
 export function renderCountryCard(countries) {
   if (countries.length > 10) {
-    countryInfoRef.innerHTML = '';
-    countryListRef.innerHTML = '';
     Notiflix.Notify.info(
       'Too many matches found. Please enter a more specific name.'
     );
+    clearAllFields();
   }
   if (countries.length === 1) {
     const countryMarkup = countries
@@ -52,7 +50,7 @@ export function renderCountryCard(countries) {
       })
       .join('');
     countryInfoRef.innerHTML = countryMarkup;
-    countryListRef.innerHTML = '';
+    clearCountryList();
 
     const countryInfoListRef = document.querySelector('.country-info__list');
     const titleRef = document.querySelector('.title');
@@ -72,7 +70,7 @@ export function renderCountryCard(countries) {
       })
       .join('');
     countryListRef.innerHTML = countriesListMarkup;
-    countryInfoRef.innerHTML = '';
+    clearCountryInfo();
 
     const listItemRef = document.querySelectorAll('.list-item');
     listItemRef.forEach(item => {
@@ -80,20 +78,15 @@ export function renderCountryCard(countries) {
     });
   }
 }
+function clearAllFields() {
+  countryInfoRef.innerHTML = EMPTY_FIELD;
+  countryListRef.innerHTML = EMPTY_FIELD;
+}
 
-// fetchCountries
-// function fetchCountries(name) {
-//   fetch(
-//     `https://restcountries.com/v3.1/name/${name}?fields=name,capital,population,flags,languages`
-//   )
-//     .then(response => {
-//       if (!response.ok) {
-//         Notiflix.Notify.failure('Oops, there is no country with that name');
-//       }
-//       return response.json();
-//     })
-//     .then(renderCountryCard)
-//     .catch(error => {
-//       console.log(error);
-//     });
-// }
+function clearCountryInfo() {
+  countryInfoRef.innerHTML = EMPTY_FIELD;
+}
+
+function clearCountryList() {
+  countryListRef.innerHTML = EMPTY_FIELD;
+}
